@@ -1,0 +1,11 @@
+{
+	"required": true,
+	"package": "cz.yorick.mixin.client",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"HandledScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

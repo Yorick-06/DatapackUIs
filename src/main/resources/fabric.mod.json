@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "datapack-uis",
+	"version": "${version}",
+	"name": "Datapack UIs",
+	"description": "Allows you to create various guis with datapacks",
+	"authors": [
+		"Yorick-06"
+	],
+	"contact": {
+		"sources": "https://github.com/Yorick-06/DatapackUIs",
+		"homepage": "https://github.com/Yorick-06/DatapackUIs",
+		"issues": "https://github.com/Yorick-06/DatapackUIs/issues"
+	},
+	"license": "MIT",
+	"icon": "assets/datapack-uis/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"cz.yorick.DatapackUIs"
+		],
+		"client": [
+			"cz.yorick.DatapackUIsClient"
+		]
+	},
+	"mixins": [
+		"datapack-uis.mixins.json",
+		{
+			"config": "datapack-uis.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*",
+		"simple-resources": ">=2.1.0"
+	}
+}
