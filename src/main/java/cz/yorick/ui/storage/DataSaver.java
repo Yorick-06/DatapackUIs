@@ -28,7 +28,7 @@ public record DataSaver(Identifier storage, String[] path, boolean storeOnUpdate
         return new DataSaver(storageId, stringPath.split("\\."), storeOnUpdate);
     }
 
-    public void save(DataCommandStorage dataStorage, NbtCompound nbt) {
+    public void writeToStorage(DataCommandStorage dataStorage, NbtCompound nbt) {
         //if no path is set, just save everything directly
         if(this.path.length == 0) {
             dataStorage.set(this.storage, nbt);
@@ -38,7 +38,7 @@ public record DataSaver(Identifier storage, String[] path, boolean storeOnUpdate
         NbtCompound savedNbt = dataStorage.get(this.storage);
         //go over the path, keeping the last path as the key to the data
         for (int i = 0; i < this.path.length - 1; i++) {
-            savedNbt = savedNbt.getCompound(this.path[i]);
+            savedNbt = getOrCreate(savedNbt, this.path[i]);
         }
 
         //set the data
@@ -48,7 +48,16 @@ public record DataSaver(Identifier storage, String[] path, boolean storeOnUpdate
         dataStorage.set(this.storage, savedNbt);
     }
 
-    public NbtCompound load(DataCommandStorage dataStorage) {
+    private static NbtCompound getOrCreate(NbtCompound nbt, String path) {
+        //gets the nbt compound, if it is missing it creates a new compound and saves it to the parent
+        return nbt.getCompound(path).orElseGet(() -> {
+            NbtCompound createdCompound = new NbtCompound();
+            nbt.put(path, createdCompound);
+            return createdCompound;
+        });
+    }
+
+    public NbtCompound loadFromStorage(DataCommandStorage dataStorage) {
         //if no path is set, load everything directly
         if(this.path.length == 0) {
             return dataStorage.get(this.storage);
@@ -56,7 +65,7 @@ public record DataSaver(Identifier storage, String[] path, boolean storeOnUpdate
 
         NbtCompound savedNbt = dataStorage.get(this.storage);
         for (String path : this.path) {
-            savedNbt = savedNbt.getCompound(path);
+            savedNbt = savedNbt.getCompoundOrEmpty(path);
         }
 
         return savedNbt;

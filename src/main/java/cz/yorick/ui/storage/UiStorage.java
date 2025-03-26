@@ -51,7 +51,7 @@ public class UiStorage {
 
         //if there is a valid data saver, use its data instead of the argument
         if(this.dataSaver != null) {
-            readNbt(this.dataSaver.load(this.player.getServer().getDataCommandStorage()));
+            readNbt(this.dataSaver.loadFromStorage(this.player.getServer().getDataCommandStorage()));
             return;
         }
 
@@ -114,7 +114,7 @@ public class UiStorage {
         }
 
         if(this.dataSaver != null) {
-            this.dataSaver.save(this.player.getServer().getDataCommandStorage(), nbt);
+            this.dataSaver.writeToStorage(this.player.getServer().getDataCommandStorage(), nbt);
         }
 
         return nbt;
@@ -126,16 +126,18 @@ public class UiStorage {
             Inventories.readNbt(nbt, this.inventory.heldStacks, player.getRegistryManager());
         }
 
-        NbtCompound propertyNbt = nbt.getCompound("properties");
-        for (String key : propertyNbt.getKeys()) {
-            ScreenProperty property = UiCommand.getScreenProperty(key);
-            //invalid property, pass
-            if(property == null || !property.validFor(this.gui.getType())) {
-                continue;
-            }
+        nbt.getCompound("properties").ifPresent(propertyNbt -> {
+            for (String key : propertyNbt.getKeys()) {
+                ScreenProperty property = UiCommand.getScreenProperty(key);
+                //invalid property, pass
+                if(property == null || !property.validFor(this.gui.getType())) {
+                    continue;
+                }
 
-            this.properties.put(property, propertyNbt.getInt(key));
-        }
+                //the key should be always present
+                this.properties.put(property, propertyNbt.getInt(key, 0));
+            }
+        });
     }
 
     public interface Holder {

@@ -38,7 +38,7 @@ public class AnvilUi extends AnvilInputGui implements UiStorage.Holder {
     }
 
     private void readInput(NbtCompound nbt) {
-        this.setDefaultInputValue(nbt.getString("input"));
+        this.setDefaultInputValue(nbt.getString("input", ""));
     }
 
     @Override
